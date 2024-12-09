@@ -33,7 +33,7 @@ public class TicketingService {
         isRunning = true;
         executorService = Executors.newFixedThreadPool(2);
 
-        // Start Vendor Thread
+
         executorService.execute(() -> {
             while (isRunning) {
                 synchronized (ticketPool) {
@@ -46,7 +46,7 @@ public class TicketingService {
                     }
                     for (int i = 0; i < configuration.getTicketReleaseRate(); i++) {
                         if (ticketPool.size() < configuration.getMaxTicketCapacity()) {
-                            ticketPool.add(1); // Add a ticket
+                            ticketPool.add(1);
                         }
                     }
                     ticketPool.notifyAll();
@@ -54,7 +54,7 @@ public class TicketingService {
             }
         });
 
-        // Start Customer Thread
+
         executorService.execute(() -> {
             while (isRunning) {
                 synchronized (ticketPool) {
@@ -67,7 +67,7 @@ public class TicketingService {
                     }
                     for (int i = 0; i < configuration.getCustomerRetrievalRate(); i++) {
                         if (!ticketPool.isEmpty()) {
-                            ticketPool.poll(); // Remove a ticket
+                            ticketPool.poll();
                         }
                     }
                     ticketPool.notifyAll();
